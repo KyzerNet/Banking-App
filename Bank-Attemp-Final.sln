@@ -5,6 +5,10 @@ VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bank-Attemp-Final", "Bank-Attemp-Final\Bank-Attemp-Final.csproj", "{7D7BF118-F78E-4171-AB23-D3B025855465}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities", "Entities", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{B2010D62-9BE8-4D75-94E1-76415DCCCF6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{7D7BF118-F78E-4171-AB23-D3B025855465}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D7BF118-F78E-4171-AB23-D3B025855465}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D7BF118-F78E-4171-AB23-D3B025855465}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2010D62-9BE8-4D75-94E1-76415DCCCF6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2010D62-9BE8-4D75-94E1-76415DCCCF6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2010D62-9BE8-4D75-94E1-76415DCCCF6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2010D62-9BE8-4D75-94E1-76415DCCCF6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B2010D62-9BE8-4D75-94E1-76415DCCCF6B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A1D51C0-DB4D-4DF4-83D3-C70D702F9988}
