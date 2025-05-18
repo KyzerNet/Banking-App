@@ -11,9 +11,9 @@ namespace Service
     {
         private readonly List<Transaction> _transactions;
         private readonly IAccountService _accountService;
-        public TransactionService()
+        public TransactionService(IAccountService accountService)
         {
-            _accountService = new AccountService();
+            _accountService = accountService;
             _transactions = new List<Transaction>();
         }
         public ResponseApi<TransactionResponse> DepositAccount(TransactionRequest request)
