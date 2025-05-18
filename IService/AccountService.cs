@@ -123,14 +123,14 @@ namespace Service
 
             // Find account by ID
             var account = _accounts.FirstOrDefault(x => x.AccountId == accountId);
-            if (account == null)
+
+            if(account == null || string.IsNullOrWhiteSpace(account.AccountId))
             {
                 response.isSuccess = false;
                 response.Message = "Validation Failed";
                 response.Errors.Add("Account Id Cannot be Found");
                 return response;
             }
-
             response.isSuccess = true;
             response.Message = "Successfully Display Account Information";
             response.Data = account.GetAccountResponse();
@@ -184,11 +184,11 @@ namespace Service
             // Find account by ID
             var account = _accounts.FirstOrDefault(x => x.AccountId == id);
 
-            if (account == null)
+            if(account == null || string.IsNullOrWhiteSpace(id))
             {
                 response.isSuccess = false;
                 response.Message = "Validation Failed";
-                response.Errors.Add("Account Email Cannot be Found");
+                response.Errors.Add("Account Id Cannot be Found");
                 return response;
             }
 
