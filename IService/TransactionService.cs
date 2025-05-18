@@ -44,9 +44,7 @@ namespace Service
             var getAccount = _accountService.GetAccountByID(request.TransactionID);
 
             //check if account exist
-            bool accountExist = _transactions.Find(x => x.AccountId == getAccount.Data.AccountNumber) != null;
-
-            if (!accountExist)
+            if(getAccount == null || getAccount.Data == null)
             {
                 response.isSuccess = false;
                 response.Message = $"Account not found";
@@ -54,30 +52,34 @@ namespace Service
                 return response;
             }
 
+            //Map request
+            var transaction = request.MapTransactionRequest();
             if (request.Type == TransactionType.Deposit)
             {
                 if (request.Amount > getAccount.Data.CurrentBalance)
                 {
+                    transaction.Status = Status.Failed.ToString();
                     response.isSuccess = false;
                     response.Message = $"Request Amount is too high";
                     response.Errors.Add("Account Not Found");
                     return response;
                 }
                 else
-                {
-                    var transaction = request.MapTransactionRequest();
-                    getAccount.Data.CurrentBalance += request.Amount;
-                    response.isSuccess = true;
-                    response.Message = $"Successfully Deposit the desire Amount";
+                {                    
+                    getAccount.Data.CurrentBalance = getAccount.Data.CurrentBalance += request.Amount;
+                    transaction.TransactionId = HelperReferenceID.GenerateReferenceID(); //generating random ID
                     transaction.Status = Status.Completed.ToString();
                     transaction.Timestamp = DateTime.UtcNow;
 
+                    response.isSuccess = true;
+                    response.Message = $"Successfully Deposit the desire Amount";                   
                     response.Data = transaction.GetTransactionResponse();
                     return response;
                 }
             }
             else
             {
+                transaction.Status = Status.Pending.ToString();
                 response.isSuccess = false;
                 response.Message = $"Invalid Transaction Type";
                 response.Errors.Add("Transaction Type Not Found");
@@ -116,9 +118,7 @@ namespace Service
             var getAccount = _accountService.GetAccountByID(request.TransactionID);
 
             //check if account exist
-            bool accountExist = _transactions.Find(x => x.AccountId == getAccount.Data.AccountNumber) != null;
-
-            if (!accountExist)
+            if(getAccount == null || getAccount.Data == null)
             {
                 response.isSuccess = false;
                 response.Message = $"Account not found";
@@ -126,6 +126,8 @@ namespace Service
                 return response;
             }
 
+            //Map request
+            var transaction = request.MapTransactionRequest();
             if (request.Type == TransactionType.Deposit)
             {
                 if (request.Amount > getAccount.Data.CurrentBalance)
@@ -137,7 +139,12 @@ namespace Service
                 }
                 else
                 {
-                    getAccount.Data.CurrentBalance -= request.Amount;
+                    getAccount.Data.CurrentBalance =  getAccount.Data.CurrentBalance -= request.Amount;
+                    transaction.TransactionId = HelperReferenceID.GenerateReferenceID(); //generating random ID
+                    transaction.Status = Status.Completed.ToString();
+                    transaction.Timestamp = DateTime.UtcNow;
+                    
+
                     response.isSuccess = true;
                     response.Message = $"Successfully Deposit the desire Amount";
                     return response;

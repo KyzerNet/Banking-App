@@ -11,9 +11,9 @@ namespace Service
     {
         private readonly List<Transfer> _transfer;
         private readonly IAccountService _accountService;
-        public TransferService()
+        public TransferService(IAccountService accountService)
         {
-            _accountService = new AccountService();
+            _accountService = accountService;
             _transfer = new List<Transfer>();      
         }
         /// <summary>
@@ -50,15 +50,14 @@ namespace Service
             var getAccountSource = _accountService.GetAccountByID(request.SourceAccountId);
 
             //check if account exist
-            bool accountPassingSource = _transfer.FirstOrDefault(x => x.SourceAccountId == getAccountSource.Data.AccountNumber) != null;
-
-            if (accountPassingSource)
-            {
-                response.isSuccess = false;
-                response.Message = $"Account not found";
-                response.Errors.Add("Account Not Found");
-                return response;
-            }
+            //check if account exist
+             if(getAccountSource == null || getAccountSource.Data == null)
+             {
+                 response.isSuccess = false;
+                 response.Message = $"Account not found";
+                 response.Errors.Add("Account Not Found");
+                 return response;
+             }
             #endregion
 
 
@@ -67,9 +66,7 @@ namespace Service
             var getAccountDestination = _accountService.GetAccountByID(request.DestinationAccountId);
 
             //check if account exist
-            bool accountPassingDestination = _transfer.FirstOrDefault(x => x.SourceAccountId == getAccountDestination.Data.AccountNumber) != null;
-
-            if (accountPassingDestination)
+            if(getAccountDestination == null || getAccountDestination.Data == null)
             {
                 response.isSuccess = false;
                 response.Message = $"Account not found";
@@ -79,7 +76,7 @@ namespace Service
 
             #endregion
 
-            var accountTransfer = new Transfer();
+            var accountTransfer = request.MapTranferRequest();
 
             if (request.Type == TransactionType.TransferOut)
             {
@@ -100,8 +97,6 @@ namespace Service
                     accountTransfer.TransferDate = DateTime.UtcNow;
                     accountTransfer.Status = Status.Completed.ToString();
                     accountTransfer.Reference = HelperReferenceID.GenerateReferenceID();
-
-
 
 
                     response.isSuccess = true;
@@ -154,9 +149,7 @@ namespace Service
             var getAccountSource = _accountService.GetAccountByID(request.SourceAccountId);
 
             //check if account exist
-            bool accountPassingSource = _transfer.FirstOrDefault(x => x.SourceAccountId == getAccountSource.Data.AccountNumber) != null;
-
-            if (accountPassingSource)
+            if(getAccountSource == null || getAccountSource.Data == null)
             {
                 response.isSuccess = false;
                 response.Message = $"Account not found";
@@ -171,9 +164,7 @@ namespace Service
             var getAccountDestination = _accountService.GetAccountByID(request.DestinationAccountId);
 
             //check if account exist
-            bool accountPassingDestination = _transfer.FirstOrDefault(x => x.SourceAccountId == getAccountDestination.Data.AccountNumber) != null;
-
-            if (accountPassingDestination)
+            if(getAccountDestination == null || getAccountDestination.Data == null)
             {
                 response.isSuccess = false;
                 response.Message = $"Account not found";
@@ -183,7 +174,7 @@ namespace Service
 
             #endregion
 
-            var accountTransfer = new Transfer();
+            var accountTransfer = request.MapTranferRequest();
 
             //Validate reques
             if (request.Type == TransactionType.TransferOut && 
