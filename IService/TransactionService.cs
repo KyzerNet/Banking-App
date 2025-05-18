@@ -11,9 +11,9 @@ namespace Service
     {
         private readonly List<Transaction> _transactions;
         private readonly IAccountService _accountService;
-        public TransactionService()
+        public TransactionService(IAccountService accountService)
         {
-            _accountService = new AccountService();
+            _accountService = accountService;
             _transactions = new List<Transaction>();
         }
         public ResponseApi<TransactionResponse> DepositAccount(TransactionRequest request)
@@ -41,7 +41,7 @@ namespace Service
             }
 
             //get account id
-            var getAccount = _accountService.GetAccountByID(request.TransactionID);
+            var getAccount = _accountService.GetAccountByID(request.AccountID);
 
             //check if account exist
             if(getAccount == null || getAccount.Data == null)
@@ -115,7 +115,7 @@ namespace Service
             }
 
             //get account id
-            var getAccount = _accountService.GetAccountByID(request.TransactionID);
+            var getAccount = _accountService.GetAccountByID(request.AccountID);
 
             //check if account exist
             if(getAccount == null || getAccount.Data == null)
@@ -147,6 +147,7 @@ namespace Service
 
                     response.isSuccess = true;
                     response.Message = $"Successfully Deposit the desire Amount";
+                    response.Data = transaction.GetTransactionResponse();
                     return response;
                 }
             }
