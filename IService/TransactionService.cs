@@ -56,17 +56,17 @@ namespace Service
             var transaction = request.MapTransactionRequest();
             if (request.Type == TransactionType.Deposit)
             {
-                if (request.Amount > 100_000)
+                if (request.Amount > getAccount.Data.CurrentBalance)
                 {
                     transaction.Status = Status.Failed.ToString();
                     response.isSuccess = false;
-                    response.Message = $"Invalid Deposit";
-                    response.Errors.Add("Cannot Deposit Greater than 100_000");
+                    response.Message = $"Request Amount is too high";
+                    response.Errors.Add("Account Not Found");
                     return response;
                 }
                 else
                 {                    
-                    getAccount.Data.CurrentBalance += request.Amount;
+                    getAccount.Data.CurrentBalance = getAccount.Data.CurrentBalance += request.Amount;
                     transaction.TransactionId = HelperReferenceID.GenerateReferenceID(); //generating random ID
                     transaction.Status = Status.Completed.ToString();
                     transaction.Timestamp = DateTime.UtcNow;
@@ -128,35 +128,28 @@ namespace Service
 
             //Map request
             var transaction = request.MapTransactionRequest();
-            if (request.Type == TransactionType.Withdrawal)
+            if (request.Type == TransactionType.Deposit)
             {
-                if (request.Amount > getAccount.Data.CurrentBalance  )
+                if (request.Amount > getAccount.Data.CurrentBalance)
                 {
                     response.isSuccess = false;
-                    response.Message = $"Invalid Withrawal";
-                    response.Errors.Add("Cannot withraw amount greater than your current Balance.");
-                    return response;
-                }
-                else if (getAccount.Data.CurrentBalance - request.Amount < 100)
-                {
-                    response.isSuccess = false;
-                    response.Message = $"Invalid Withdrawal";
-                    response.Errors.Add("You must keep a minimum balance of 100 after withdrawal.");
+                    response.Message = $"Request Amount is too high";
+                    response.Errors.Add("Account Not Found");
                     return response;
                 }
                 else
                 {
-                    getAccount.Data.CurrentBalance -= request.Amount;
-                    transaction.TransactionId = HelperReferenceID.GenerateReferenceID();
+                    getAccount.Data.CurrentBalance =  getAccount.Data.CurrentBalance -= request.Amount;
+                    transaction.TransactionId = HelperReferenceID.GenerateReferenceID(); //generating random ID
                     transaction.Status = Status.Completed.ToString();
                     transaction.Timestamp = DateTime.UtcNow;
+                    
 
                     response.isSuccess = true;
-                    response.Message = $"Successfully withdrew the desired amount";
+                    response.Message = $"Successfully Deposit the desire Amount";
                     response.Data = transaction.GetTransactionResponse();
                     return response;
                 }
-               
             }
             else
             {
