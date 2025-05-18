@@ -7,7 +7,7 @@ using Service.IService;
 
 namespace Service
 {
-    internal class TransactionService : ITransactionService
+    public class TransactionService : ITransactionService
     {
         private readonly List<Transaction> _transactions;
         private readonly IAccountService _accountService;

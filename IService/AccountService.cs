@@ -6,9 +6,9 @@ using Service.IService;
 
 namespace Service
 {
-    internal class AccountService : IAccountService
+    public class AccountService : IAccountService
     {
-          private readonly List<Account> _accounts;
+        private readonly List<Account> _accounts;
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountService"/> class.
         /// </summary>
