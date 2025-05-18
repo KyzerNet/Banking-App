@@ -15,9 +15,6 @@ namespace Models
         public string? Gender { get; set; }
         public DateTime? BirthDay { get; set; }
         public decimal? CurrentBalance { get; set; }
-        public DateTime CreatedAt
-        {
-            get; set;
-        }
+        public DateTime CreatedAt { get; set; }
     }
 }
