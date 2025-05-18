@@ -41,7 +41,7 @@ namespace Service
             }
 
             //get account id
-            var getAccountId = _accountService.GetAccountByID(request.AccountID);
+            var getAccount = _accountService.GetAccountByID(request.TransactionID);
 
             //check if account exist
             if(getAccountId == null || getAccountId.Data == null)
@@ -118,7 +118,7 @@ namespace Service
             }
 
             //get account id
-            var getAccountId = _accountService.GetAccountByID(request.AccountID);
+            var getAccount = _accountService.GetAccountByID(request.TransactionID);
 
             //check if account exist
             if(getAccountId == null || getAccountId.Data == null)
@@ -158,8 +158,7 @@ namespace Service
                     transaction.Timestamp = DateTime.UtcNow;
 
                     response.isSuccess = true;
-                    response.Message = $"Successfully withdrew the desired amount";
-                    response.Data = transaction.GetTransactionResponse();
+                    response.Message = $"Successfully Deposit the desire Amount";
                     return response;
                 }
                
