@@ -9,9 +9,6 @@ namespace ModelDto.TransactionDto
     /// </summary>
     public class TransactionRequest
     {
-        [Required(ErrorMessage = "TransactionID is required.")]
-        [StringLength(12, ErrorMessage = "TransactionID cannot be longer than 12 characters.")]
-        public string TransactionID { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "AccountID is required.")]
         [StringLength(12, ErrorMessage = "AccountID cannot be longer than 12 characters.")]
@@ -33,7 +30,6 @@ namespace ModelDto.TransactionDto
         {
             return new Transaction
             {
-                TransactionId = this.TransactionID,
                 AccountId = this.AccountID,
                 Type = this.Type.ToString(),
                 Amount = this.Amount,
