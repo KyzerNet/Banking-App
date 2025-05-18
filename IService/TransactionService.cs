@@ -41,7 +41,7 @@ namespace Service
             }
 
             //get account id
-            var getAccount = _accountService.GetAccountByID(request.TransactionID);
+            var getAccount = _accountService.GetAccountByID(request.AccountID);
 
             //check if account exist
             if(getAccount == null || getAccount.Data == null)
@@ -115,7 +115,7 @@ namespace Service
             }
 
             //get account id
-            var getAccount = _accountService.GetAccountByID(request.TransactionID);
+            var getAccount = _accountService.GetAccountByID(request.AccountID);
 
             //check if account exist
             if(getAccount == null || getAccount.Data == null)
