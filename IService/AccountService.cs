@@ -216,5 +216,15 @@ namespace Service
                 Data = responseUpdate
             };
         }
+
+        public bool UpdateBalance(string accountId, decimal newbalance)
+        {
+            var account = _accounts.FirstOrDefault(temp => temp.AccountId == accountId);
+            if (account == null)
+                return false;
+
+            account.CurrentBalance = newbalance;
+            return true;
+        }
     }
 }

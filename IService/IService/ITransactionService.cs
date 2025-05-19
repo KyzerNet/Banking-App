@@ -21,5 +21,7 @@ namespace Service.IService
         /// <param name="request"></param>
         /// <returns>Response Api Transaction Withdraw Account Reponse</returns>
         ResponseApi<TransactionResponse> WithdrawAccount(TransactionRequest request);
+
+       
     }
 }

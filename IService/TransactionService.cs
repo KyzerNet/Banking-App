@@ -41,10 +41,10 @@ namespace Service
             }
 
             //get account id
-            var getAccount = _accountService.GetAccountByID(request.AccountID);
+            var getAccountId = _accountService.GetAccountByID(request.AccountID);
 
             //check if account exist
-            if(getAccount == null || getAccount.Data == null)
+            if(getAccountId == null || getAccountId.Data == null)
             {
                 response.isSuccess = false;
                 response.Message = $"Account not found";
@@ -66,7 +66,10 @@ namespace Service
                 }
                 else
                 {                    
-                    getAccount.Data.CurrentBalance += request.Amount;
+                    var newBalance = getAccountId.Data.CurrentBalance += request.Amount;
+                    //update balance
+                    _accountService.UpdateBalance(getAccountId.Data.AccountNumber, (decimal)newBalance);
+
                     transaction.TransactionId = HelperReferenceID.GenerateReferenceID(); //generating random ID
                     transaction.Status = Status.Completed.ToString();
                     transaction.Timestamp = DateTime.UtcNow;
@@ -115,10 +118,10 @@ namespace Service
             }
 
             //get account id
-            var getAccount = _accountService.GetAccountByID(request.AccountID);
+            var getAccountId = _accountService.GetAccountByID(request.AccountID);
 
             //check if account exist
-            if(getAccount == null || getAccount.Data == null)
+            if(getAccountId == null || getAccountId.Data == null)
             {
                 response.isSuccess = false;
                 response.Message = $"Account not found";
@@ -130,14 +133,14 @@ namespace Service
             var transaction = request.MapTransactionRequest();
             if (request.Type == TransactionType.Withdrawal)
             {
-                if (request.Amount > getAccount.Data.CurrentBalance  )
+                if (request.Amount > getAccountId.Data.CurrentBalance  )
                 {
                     response.isSuccess = false;
                     response.Message = $"Invalid Withrawal";
                     response.Errors.Add("Cannot withraw amount greater than your current Balance.");
                     return response;
                 }
-                else if (getAccount.Data.CurrentBalance - request.Amount < 100)
+                else if (getAccountId.Data.CurrentBalance - request.Amount < 100)
                 {
                     response.isSuccess = false;
                     response.Message = $"Invalid Withdrawal";
@@ -146,7 +149,10 @@ namespace Service
                 }
                 else
                 {
-                    getAccount.Data.CurrentBalance -= request.Amount;
+                    getAccountId.Data.CurrentBalance -= request.Amount;
+                     var newBalance = getAccountId.Data.CurrentBalance += request.Amount;
+                    //update balance
+                    _accountService.UpdateBalance(getAccountId.Data.AccountNumber, (decimal)newBalance);
                     transaction.TransactionId = HelperReferenceID.GenerateReferenceID();
                     transaction.Status = Status.Completed.ToString();
                     transaction.Timestamp = DateTime.UtcNow;

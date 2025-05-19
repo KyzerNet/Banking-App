@@ -38,5 +38,13 @@ namespace Service.IService
         /// <param name="accountId">The unique identifier of the account to delete.</param>
         /// <returns>A response containing the deleted account information.</returns>
         ResponseApi<AccountResponse> DeleteAccount(string? accountId);
+
+         /// <summary>
+        /// Update Account Balance
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        bool UpdateBalance(string accountId, decimal amount);
     }
 }
