@@ -3,7 +3,7 @@ using Models.Enums;
 
 namespace ProjectTesting.TestHelpers
 {
-     public class AddedAccount
+    public class AddedAccount
     {
         public static AccountRequest AddAccount()
         {

@@ -21,7 +21,7 @@ namespace ProjectTesting
         {
             var result = _account.AddAccount(null);
 
-            AsserApiHelpers.AsserApiError(result, "Validation Failed", "Null request received");
+            AsserApiHelpers.AsserApiError(result, "Invalid request: Request body is missing", "Null request received");
         }
         [Fact]
         public void AddAccount_EmptyAccountName_CheckWhenEmpty()
@@ -35,7 +35,7 @@ namespace ProjectTesting
             };
             var added_account = _account.AddAccount(addAccount);
 
-            AsserApiHelpers.AsserApiError(added_account, "Validation Failed", "Name is Required");
+            AsserApiHelpers.AsserApiError(added_account, "Validation Failed", "Account name is required.");
         }
         [Fact]
         public void AddAccount_EmptyAccountEmail_CheckWhenEmpty()
@@ -49,7 +49,21 @@ namespace ProjectTesting
             };
             var added_account = _account.AddAccount(addAccount);
 
-            AsserApiHelpers.AsserApiError(added_account, "Validation Failed", "Email is Required");
+            AsserApiHelpers.AsserApiError(added_account, "Validation Failed", "Account email is required.");
+        }
+        [Fact]
+        public void CheckIf_ID_Generating()
+        {
+            // Arrange
+            var addAccount = AddedAccount.AddAccount();
+
+            //act
+            var added_account = _account.AddAccount(addAccount);
+
+            //assert
+            Assert.NotEmpty(added_account.Data.AccountNumber);
+            Assert.StartsWith("CA", added_account.Data.AccountNumber);
+            _testOutput.WriteLine(added_account.Data.ToString());
         }
         [Fact]
         public void ValidateEmail_WhenIs_Duplicated()
@@ -85,7 +99,7 @@ namespace ProjectTesting
             };
             var added_account = _account.AddAccount(addAccount);
 
-            AsserApiHelpers.AsserApiSuccess(added_account, "Successfully Added");
+            AsserApiHelpers.AsserApiSuccess(added_account, "Successfully Added your Account");
         }
 
         #endregion
@@ -129,7 +143,6 @@ namespace ProjectTesting
                 _testOutput.WriteLine(account.ToString());
             }
         }
-
         #endregion
 
         #region Get Account ID test
@@ -138,7 +151,7 @@ namespace ProjectTesting
         {
             var account = _account.GetAccountByID(null);
 
-            AsserApiHelpers.AsserApiError(account,"Validation Failed","Account Id Cannot be Found");
+            AsserApiHelpers.AsserApiError(account,"Invalid request: Account ID cannot be null","Account Id Cannot be Found");
 
         }
          // Test to ensure that when a non-existent ID is passed, 
@@ -167,9 +180,82 @@ namespace ProjectTesting
             Assert.NotNull(getID); // Ensure the response is not null
             Assert.True(getID.isSuccess); // Ensure the account was retrieved successfully
 
-            AsserApiHelpers.AsserApiSuccess(getID, "ID is Retrieved completely");
+            AsserApiHelpers.AsserApiSuccess(getID, "Successfully Display Account Information");
         }
 
+        #endregion
+
+        #region Update Account
+        [Fact]
+        public void UpdateAccount_ShouldFail_WhenAccountDoesNotExistAndNull()
+        {
+            var result = _account.UpdateAccount(null,"");
+            AsserApiHelpers.AsserApiError(result, "Invalid request: Request body is missing", "Null request received");
+        }
+        [Fact]
+        public void UpdateAccount_ShouldFail_WhenEmailFormatInvalid()
+        {
+            var addAccount = new AccountRequest
+            {
+                AccountEmail = "invalid-email-format",
+                AccountName = "John Doe",
+                BirthDate = DateTime.Parse("2011-11-11"),
+                Gender = GenderOptions.Female,
+            };
+            var addedAccount = _account.AddAccount(addAccount);
+
+            AsserApiHelpers.AsserApiError(addedAccount, "Validation Failed", "Invalid email address format.");
+        }
+        [Fact]
+        public void UpdateAccount_ShouldFail_WhenGenderIsInvalid()
+        {
+            var addAccount = new AccountRequest
+            {
+                AccountEmail = "john@gmail.com",
+                AccountName = "John Doe",
+                BirthDate = DateTime.Parse("2011-11-11"),
+                Gender = (GenderOptions)32423,
+            };
+            var result = _account.AddAccount(addAccount);
+            AsserApiHelpers.AsserApiError(result,"Validation Failed", "Invalid Gender Options.");
+        }
+        [Fact]
+        public void UpdateAccount_ShouldSucceed_WithValidData()
+        {
+            var addedAccount = _account.AddAccount(AddedAccount.AddAccount());
+
+            var ID = addedAccount.Data.AccountNumber;
+            var updateAccount = new AccountUpdateRequest
+            {
+                AccountName = "Updated Name",
+                AccountEmail = "sadasdsa@gmail.com",
+                BirthDate = DateTime.Parse("2021-11-11"),
+                Gender = GenderOptions.Male
+            };
+            var update = _account.UpdateAccount(updateAccount,ID);
+            AsserApiHelpers.AsserApiSuccess(update, "Successfully Updated your Account");
+        }
+        #endregion
+
+        #region Delete Account
+        [Fact]
+        public void DeleteAccount_ShouldFail_WhenAccountDoesNotExist()
+        {
+            var result = _account.DeleteAccount("CA1234567890");
+            AsserApiHelpers.AsserApiError(result, "Validation Failed", "Account Id Cannot be Found");
+        }
+        [Fact]
+        public void DeleteAccount_ShouldSucceed_WhenAccountExists()
+        {
+            var addedAccount = _account.AddAccount(AddedAccount.AddAccount());
+
+            var ID = addedAccount.Data.AccountNumber;
+
+            var deleteAccount = _account.DeleteAccount(ID);
+
+            AsserApiHelpers.AsserApiSuccess(deleteAccount, "Successfully Deleted your Account");
+
+        }
         #endregion
     }
 }
