@@ -36,7 +36,8 @@ namespace ModelDto.TransferResponse
                 Reference = transfer.Reference,
                 Type = transfer.Type,
                 TransferDate = transfer.TransferDate,
-                Status = transfer.Status.ToString()
+                Status = transfer.Status.ToString(),
+                NewBalance = transfer.NewBalance
             };
         }
     }

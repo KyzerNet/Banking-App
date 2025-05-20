@@ -34,7 +34,8 @@ namespace ModelDto.TransactionDto
                 Type = transaction.Type.ToString(),
                 Amount = transaction.Amount,
                 Timestamp = DateTime.Now,
-                Status = transaction.Status.ToString()
+                Status = transaction.Status.ToString(),
+                NewBalance = transaction.NewBalance
             };
         }
     }
