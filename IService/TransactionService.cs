@@ -73,7 +73,7 @@ namespace Service
                     transaction.TransactionId = HelperReferenceID.GenerateReferenceID(); //generating random ID
                     transaction.Status = Status.Completed.ToString();
                     transaction.Timestamp = DateTime.UtcNow;
-
+                    transaction.NewBalance = newBalance;
                     response.isSuccess = true;
                     response.Message = $"Successfully Deposit the desire Amount";                   
                     response.Data = transaction.GetTransactionResponse();
