@@ -135,6 +135,11 @@ namespace Service
                     var NewBalance = _accountService.UpdateBalance(getAccountSource.Data.AccountNumber, (decimal)newBalance);
 
                     var transactionHistory = TransactionHistory(getAccountDestination.Data.AccountNumber, request.Amount,(decimal)newBalance);
+                    accountTransfer.Status = Status.Completed.ToString();
+                    accountTransfer.TransferDate = DateTime.UtcNow;
+                    accountTransfer.Reference = transactionHistory.Data.TransactionID;
+                    accountTransfer.Amount = request.Amount;
+
 
                     response.isSuccess = true;
                     response.Message = $"Successfully Transfering Money to other Account";
