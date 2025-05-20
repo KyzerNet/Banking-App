@@ -96,7 +96,7 @@ namespace Service
 
             #region Check if account is Account Source is same as Account Destination
 
-            if (getAccountSource == getAccountDestination)
+            if (getAccountSource.Data.AccountNumber.Equals(getAccountDestination.Data.AccountNumber))
             {
                 response.isSuccess = false;
                 response.Message = "Invalid Request";
