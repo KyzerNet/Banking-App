@@ -12,5 +12,6 @@
         public string Reference { get; set; }
         public DateTime TransferDate { get; set; }
         public string Status { get; set; }
+        public decimal? NewBalance { get; set; }
     }
 }
