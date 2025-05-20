@@ -10,6 +10,7 @@ namespace ModelDto.TransferResponse
         public string SourceAccountId { get; set; }
         public string DestinationAccountId { get; set; }
         public decimal Amount { get; set; }
+        public decimal? NewBalance { get; set; }
         public string Reference { get; set; }
         public string Type { get; set; }
         public DateTime TransferDate { get; set; }

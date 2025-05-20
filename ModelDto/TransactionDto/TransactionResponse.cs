@@ -11,6 +11,7 @@ namespace ModelDto.TransactionDto
         public string AccountID { get; set; }
         public string Type { get; set; }
         public decimal Amount { get; set; }
+        public decimal? NewBalance { get; set; }
         public DateTime Timestamp { get; set; }
         public string Status { get; set; }
     }
