@@ -25,9 +25,9 @@ namespace Bank_Attemp_Final.Controllers
 
             if (!result.isSuccess)
             {
-                return BadRequest("Failed to add account.");
+                return BadRequest(result.Errors);
             }
-            return Ok("Account added successfully");
+            return Ok(result.Message);
         }
 
         [HttpGet]
@@ -37,9 +37,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.GetListAccounts();
             if (result == null || !result.isSuccess)
             {
-                return NotFound("No accounts found.");
+                return NotFound(result.Errors);
             }
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         [HttpGet("{id}")]
@@ -49,9 +49,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.GetAccountByID(id);
             if (result == null || !result.isSuccess)
             {
-                return NotFound("Account not found.");
+                return NotFound(result.Errors);
             }
-            return Ok(result);
+            return Ok(result.Message);
         }
 
         [HttpPatch("{id}")]
@@ -61,9 +61,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.UpdateAccount( account,id);
             if (!result.isSuccess)
             {
-                return BadRequest("Failed to update account.");
+                return BadRequest(result.Errors);
             }
-            return Ok("Account updated successfully");
+            return Ok(result.Message);
         }
 
         [HttpDelete("{id}")]
@@ -73,9 +73,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.DeleteAccount(id);
             if (!result.isSuccess)
             {
-                return NotFound("Failed to delete account.");
+                return NotFound(result.Errors);
             }
-            return Ok("Account deleted successfully");
+            return Ok(result.Message);
         }
     }
 }

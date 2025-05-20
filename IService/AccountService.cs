@@ -146,6 +146,14 @@ namespace Service
             // Map all accounts to response DTOs
             var accountResponse = _accounts.Select(x => x.GetAccountResponse()).ToList();
 
+            if(accountResponse.Count == 0)
+            {
+                return new ResponseApi<List<AccountResponse>>()
+                {
+                    isSuccess = true,
+                    Message = "No Account Found",
+                };
+            }
             return new ResponseApi<List<AccountResponse>>
             {
                 isSuccess = true,
@@ -202,18 +210,16 @@ namespace Service
                 return response;
             }
 
-            var responseUpdate = new AccountResponse
-            {
-                CostumerName = request.AccountName,
-                CostumerEmail = request.AccountEmail,
-                BirthDay = request.BirthDate,
-            };
+            account.CostumerName = request.AccountName;
+            account.CostumerEmail = request.AccountEmail;
+            account.Gender = request.Gender.ToString();
+            account.BirthDay = request.BirthDate;
 
             return new ResponseApi<AccountResponse>
             {
                 isSuccess = true,
                 Message = "Successfully Updated your Account",
-                Data = responseUpdate
+                Data = account.GetAccountResponse()
             };
         }
 
