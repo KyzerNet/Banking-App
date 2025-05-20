@@ -25,9 +25,9 @@ namespace Bank_Attemp_Final.Controllers
 
             if (!result.isSuccess)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(result);
             }
-            return Ok(result.Message);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -37,9 +37,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.GetListAccounts();
             if (result == null || !result.isSuccess)
             {
-                return NotFound(result.Errors);
+                return NotFound(result);
             }
-            return Ok(result.Data);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -49,9 +49,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.GetAccountByID(id);
             if (result == null || !result.isSuccess)
             {
-                return NotFound(result.Errors);
+                return NotFound(result);
             }
-            return Ok(result.Message);
+            return Ok(result);
         }
 
         [HttpPatch("{id}")]
@@ -61,9 +61,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.UpdateAccount( account,id);
             if (!result.isSuccess)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(result);
             }
-            return Ok(result.Message);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
@@ -73,9 +73,9 @@ namespace Bank_Attemp_Final.Controllers
             var result = _account.DeleteAccount(id);
             if (!result.isSuccess)
             {
-                return NotFound(result.Errors);
+                return NotFound(result);
             }
-            return Ok(result.Message);
+            return Ok(result);
         }
     }
 }
