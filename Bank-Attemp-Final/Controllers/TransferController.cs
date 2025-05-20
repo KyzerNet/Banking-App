@@ -26,5 +26,16 @@ namespace Bank_Attemp_Final.Controllers
             }
             return Ok(result);
         }
+        [HttpGet]
+        public IActionResult GetTransactionHistory()
+        {
+            // Ensure the GetTransactionHistory method returns a valid ResponseApi type
+            var result = _transfer.TransferHistory();
+            if (result == null || !result.isSuccess)
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
+        }
     }
 }
