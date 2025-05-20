@@ -32,6 +32,7 @@ namespace Service
                     Type = TransactionType.TransferIn.ToString(),
                     Status = Status.Completed.ToString(),
                     Timestamp = DateTime.UtcNow,
+                    NewBalance = newBalance,
                 }
             };
         }
@@ -139,7 +140,6 @@ namespace Service
                     accountTransfer.TransferDate = DateTime.UtcNow;
                     accountTransfer.Reference = transactionHistory.Data.TransactionID;
                     accountTransfer.Amount = request.Amount;
-
 
                     response.isSuccess = true;
                     response.Message = $"Successfully Transfering Money to other Account";
