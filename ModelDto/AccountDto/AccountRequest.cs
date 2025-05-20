@@ -56,6 +56,10 @@ namespace ModelDto.AccountDto
                 {
                     return new ValidationResult(ErrorMessage ?? "Birth Date must not exceed the current date and time.");
                 }
+                if (birthDate == dateNow)
+                {
+                    return new ValidationResult(ErrorMessage ?? "Birth Date cannot be Today");
+                }
             }
 
             return ValidationResult.Success;
