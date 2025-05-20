@@ -15,7 +15,7 @@ namespace ModelDto.TransactionDto
         public string AccountID { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Transaction type is required.")]
-        [EnumDataType(typeof(TransactionType), ErrorMessage = "Invalid transaction type.")]
+        [EnumDataType(typeof(TransactionType), ErrorMessage = "Invalid Transaction Type.")]
         public TransactionType Type { get; set; }
 
         [Required(ErrorMessage = "Amount is required.")]

@@ -1,7 +1,6 @@
 ﻿using Models.Enums;
 using Models;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 
 namespace ModelDto.AccountDto
@@ -21,7 +20,6 @@ namespace ModelDto.AccountDto
         public GenderOptions Gender { get; set; }
 
         [ValidateBirthDate]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))]
         public DateTime BirthDate { get; set; }
 
         public Account MapAccountRequest()
