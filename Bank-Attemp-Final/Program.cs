@@ -1,4 +1,7 @@
 
+using Service;
+using Service.IService;
+
 namespace Bank_Attemp_Final
 {
     public class Program
@@ -14,7 +17,9 @@ namespace Bank_Attemp_Final
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddSingleton<IAccountService, AccountService>();
+            builder.Services.AddSingleton<ITransactionService, TransactionService>();
+            builder.Services.AddSingleton<ITransferService, TransferService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
