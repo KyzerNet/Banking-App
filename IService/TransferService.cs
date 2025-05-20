@@ -6,6 +6,7 @@ using Response;
 using Service.IService;
 using ModelDto;
 using ModelDto.TransactionDto;
+using ModelDto.AccountDto;
 namespace Service
 {
     public class TransferService : ITransferService
@@ -18,24 +19,26 @@ namespace Service
             _transfer = new List<Transfer>();      
         }
 
-        private ResponseApi<TransactionResponse> TransactionHistory(string accountId,decimal amount, decimal newBalance)
+        public ResponseApi<List<TransferResponse>> TransferHistory()
         {
-            return new ResponseApi<TransactionResponse>
+            var history = _transfer.Select(x => x.GetTransferResponse()).ToList();
+            if(_transfer.Count == 0)
+            {
+                return new ResponseApi<List<TransferResponse>>()
+                {
+                    isSuccess = true,
+                    Message = "No Account Found",
+                };
+            }
+            return new ResponseApi<List<TransferResponse>>
             {
                 isSuccess = true,
-                Message = "Transfer History",
-                Data = new TransactionResponse
-                {
-                    TransactionID = HelperReferenceID.GenerateReferenceID(),
-                    AccountID = accountId,
-                    Amount = amount,
-                    Type = TransactionType.TransferIn.ToString(),
-                    Status = Status.Completed.ToString(),
-                    Timestamp = DateTime.UtcNow,
-                    NewBalance = newBalance,
-                }
+                Message = "Successfully Display List of Transaction History",
+                Data = history
             };
         }
+
+
         /// <summary>
         /// Cash out
         /// </summary>
@@ -108,7 +111,7 @@ namespace Service
 
             var accountTransfer = request.MapTranferRequest();
 
-            //Validate reques
+            //Validate request
             if (request.Type == TransactionType.TransferOut && 
                 getAccountDestination.Data.AccountNumber != getAccountSource.Data.AccountNumber)
             {
@@ -134,13 +137,13 @@ namespace Service
                     var newBalance = getAccountSource.Data.CurrentBalance += request.Amount;
                     
                     var NewBalance = _accountService.UpdateBalance(getAccountSource.Data.AccountNumber, (decimal)newBalance);
-
-                    var transactionHistory = TransactionHistory(getAccountDestination.Data.AccountNumber, request.Amount,(decimal)newBalance);
+                    
                     accountTransfer.Status = Status.Completed.ToString();
+                    accountTransfer.Reference = HelperReferenceID.GenerateReferenceID(); //generating random ID
+                    accountTransfer.Type = TransactionType.TransferOut.ToString();
                     accountTransfer.TransferDate = DateTime.UtcNow;
-                    accountTransfer.Reference = transactionHistory.Data.TransactionID;
-                    accountTransfer.Amount = request.Amount;
 
+                    accountTransfer.NewBalance = newBalance;
                     response.isSuccess = true;
                     response.Message = $"Successfully Transfering Money to other Account";
                     response.Data = accountTransfer.GetTransferResponse();

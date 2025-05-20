@@ -16,6 +16,11 @@ namespace Service.IService
         /// <returns>Response Api Transaction Transfer Account Reponse</returns>
         ResponseApi<TransferResponse> TransferOut(TranferRequest request);
 
+        /// <summary>
+        /// Transfer Other balance from your account into another.
+        /// </summary>
+        /// <returns></returns>
+        ResponseApi<List<TransferResponse>> TransferHistory();
 
     }
 }
