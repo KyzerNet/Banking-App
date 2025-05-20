@@ -27,8 +27,8 @@ namespace ProjectTesting
         [Fact]
         public void CheckIf_TransferRequest_isNull()
         {
-            var transfer_request = _transfer.TransferIn(null);
-            AsserApiHelpers.AsserApiError(transfer_request, "Null request received", "Invalid request: Request body is missing");
+            var transfer_request = _transfer.TransferOut(null);
+            AsserApiHelpers.AsserApiError(transfer_request,  "Invalid request: Request body is missing","Null request received");
         }
         // Test to ensure source and destination account numbers are not the same for transfer out
         [Fact]
@@ -56,7 +56,8 @@ namespace ProjectTesting
             };
             var transfer = _transfer.TransferOut(transfer_request);
 
-            AsserApiHelpers.AsserApiError(transfer, "Invalid Request", "Source Account Cannot be same as DestinationAccount");
+            Assert.Equal(transfer_request.SourceAccountId, transfer_request.DestinationAccountId);
+            AsserApiHelpers.AsserApiError(transfer, "Invalid Request", "Source and Destination Account Cannot be the same");
         }
         // Test to check if incorrect transfer type is handled
         [Fact]
@@ -91,30 +92,41 @@ namespace ProjectTesting
         public void checkTrasferOut_AmountExceedLimmit_to100k()
         {
             var addAccount = _accountService.AddAccount(AddedAccount.AddAccount2());
+            var addAccount2 = _accountService.AddAccount(AddedAccount.AddAccount());
 
             // Deposit a large amount first
             var deposit_request = new TransactionRequest
             {
                 AccountID = addAccount.Data.AccountNumber,
-                Amount = 200_000,
+                Amount = 100_000,
                 Type = TransactionType.Deposit,
             };
 
             var deposit = _transaction.DepositAccount(deposit_request);
+            
+            // Deposit a large amount first
+            var deposit_request2 = new TransactionRequest
+            {
+                AccountID = addAccount.Data.AccountNumber,
+                Amount = 100_000,
+                Type = TransactionType.Deposit,
+            };
+
+            var deposit2 = _transaction.DepositAccount(deposit_request);
 
             // Attempt to transfer the maximum allowed amount
             var transfer_request = new TranferRequest
             {
-                SourceAccountId = addAccount.Data.AccountNumber,
-                DestinationAccountId = addAccount.Data.AccountNumber,
-                Amount = 100_000,
+                SourceAccountId = deposit.Data.AccountID,
+                DestinationAccountId = addAccount2.Data.AccountNumber,
+                Amount = 130_000,
                 Type = TransactionType.TransferOut,
             };
             var transfer = _transfer.TransferOut(transfer_request);
 
             AsserApiHelpers.AsserApiError(transfer, "Invalid Request", "Transferring amount is too high, cannot exceed 100,000 per day");
         }
-                [Fact]
+        [Fact]
          // Test to ensure that when a non-existent Source id is passed, 
         public void GetAccountByID_NonExistentSource_ReturnResponseType()
         {
@@ -137,7 +149,7 @@ namespace ProjectTesting
                 Amount = 5000,
                 Type = TransactionType.TransferIn,
             };
-            var result = _transfer.TransferIn("CA231312312323");
+            var result = _transfer.TransferOut(transferAccount);
             AsserApiHelpers.AsserApiError(result,"Validation Failed","Source Account Id Cannot be Found");
         }
         [Fact]
@@ -163,7 +175,7 @@ namespace ProjectTesting
                 Amount = 5000,
                 Type = TransactionType.TransferIn,
             };
-            var result = _transfer.TransferIn("CA231312312323");
+            var result = _transfer.TransferOut(transferAccount);
             AsserApiHelpers.AsserApiError(result,"Validation Failed","Source Account Id Cannot be Found");
         }
 
@@ -187,12 +199,13 @@ namespace ProjectTesting
             // Perform a valid transfer out
             var transfer_request = new TranferRequest
             {
-                SourceAccountId = sourceAccount.Data.AccountNumber,
+                SourceAccountId = desposit.Data.AccountID,
                 DestinationAccountId = destinationAccount.Data.AccountNumber,
                 Amount = 5000,
                 Type = TransactionType.TransferOut,
             };
             var transfer = _transfer.TransferOut(transfer_request);
+
             AsserApiHelpers.AsserApiSuccess(transfer, "Successfully Transfering Money to other Account");
         }
         #endregion
