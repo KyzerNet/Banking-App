@@ -29,7 +29,7 @@ namespace Service
                     TransactionID = HelperReferenceID.GenerateReferenceID(),
                     AccountID = accountId,
                     Amount = amount,
-                    Type = TransactionType.TransferOut.ToString(),
+                    Type = TransactionType.TransferIn.ToString(),
                     Status = Status.Completed.ToString(),
                     Timestamp = DateTime.UtcNow,
                 }
