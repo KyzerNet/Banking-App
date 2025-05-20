@@ -5,6 +5,7 @@ using Models;
 using Response;
 using Service.IService;
 using ModelDto;
+using ModelDto.TransactionDto;
 namespace Service
 {
     public class TransferService : ITransferService
@@ -17,68 +18,30 @@ namespace Service
             _transfer = new List<Transfer>();      
         }
 
-        public ResponseApi<TransferResponse> TransferIn(string? request)
+        private ResponseApi<TransactionResponse> TransactionHistory(string accountId,decimal amount, decimal newBalance)
         {
-            // Initialize the response object
-            ResponseApi<TransferResponse> response = new();
-
-            // Check if the request is null or whitespace
-            if (string.IsNullOrWhiteSpace(request))
+            return new ResponseApi<TransactionResponse>
             {
-                response.isSuccess = false;
-                response.Message = $"Invalid request: Request body is missing";
-                response.Errors.Add("Null request received");
-                return response; // Return early if request is invalid
-            }
-
-            // Prepare a response object for mapping transfer data
-            var mapTransfer = new ResponseApi<TransferResponse>();
-
-            // Attempt to retrieve the account by ID
-            var accountExist = _accountService.GetAccountByID(request);
-
-            // If account does not exist or data is null, return failure
-            if (accountExist == null || accountExist.Data == null)
-            {
-                // Defensive: ensure Data is not null before setting Status
-                if (mapTransfer.Data == null)
-                    mapTransfer.Data = new TransferResponse();
-
-                mapTransfer.Data.Status = Status.Failed.ToString();
-                response.isSuccess = false;
-                response.Message = "Validation Failed";
-                response.Errors.Add("Account Id Cannot be Found");
-                return response;
-            }
-
-            // Map account data to transfer response
-            if (mapTransfer.Data == null)
-                mapTransfer.Data = new TransferResponse();
-
-            mapTransfer.Data.SourceAccountId = accountExist.Data.AccountNumber;
-            mapTransfer.Data.DestinationAccountId = accountExist.Data.AccountNumber;
-            mapTransfer.Data.Status = Status.Completed.ToString();
-            mapTransfer.Data.Amount = (decimal)(accountExist.Data.CurrentBalance ?? 0);
-            mapTransfer.Data.Reference = HelperReferenceID.GenerateReferenceID();
-            mapTransfer.Data.TransferDate = DateTime.UtcNow;
-            mapTransfer.Data.Type = TransactionType.TransferIn.ToString();
-
-            // Mark the operation as successful
-            accountExist.isSuccess = true;
-            response.isSuccess = true;
-            response.Message = "Successfully Transfering Money to your Account";
-            response.Data = mapTransfer.Data;
-            return response;
+                isSuccess = true,
+                Message = "Transfer History",
+                Data = new TransactionResponse
+                {
+                    TransactionID = HelperReferenceID.GenerateReferenceID(),
+                    AccountID = accountId,
+                    Amount = amount,
+                    Type = TransactionType.TransferOut.ToString(),
+                    Status = Status.Completed.ToString(),
+                    Timestamp = DateTime.UtcNow,
+                }
+            };
         }
-
         /// <summary>
         /// Cash out
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         public ResponseApi<TransferResponse> TransferOut(TranferRequest request)
-        {
-            
+        {      
              ResponseApi<TransferResponse> response = new();
             //check if null
             if(request == null)
@@ -101,7 +64,7 @@ namespace Service
                 return response;
             }
 
-            #region check if account source account exist
+            #region check if account source account exist getAccountSource
             //get account from source
             var getAccountSource = _accountService.GetAccountByID(request.SourceAccountId);
 
@@ -109,14 +72,14 @@ namespace Service
             if(getAccountSource == null || getAccountSource.Data == null)
             {
                 response.isSuccess = false;
-                response.Message = $"Account not found";
-                response.Errors.Add("Account Not Found");
+                response.Message = $"Validation Failed";
+                response.Errors.Add("Source Account Id Cannot be Found");
                 return response;
             }
             #endregion
 
 
-            #region check if account  destination  account exist
+            #region check if account  destination  account exist getAccountDestination
             //get account from destination
             var getAccountDestination = _accountService.GetAccountByID(request.DestinationAccountId);
 
@@ -124,11 +87,22 @@ namespace Service
             if(getAccountDestination == null || getAccountDestination.Data == null)
             {
                 response.isSuccess = false;
-                response.Message = $"Account not found";
-                response.Errors.Add("Account Not Found");
+                response.Message = $"Validation Failed";
+                response.Errors.Add("Source Account Id Cannot be Found");
                 return response;
             }
 
+            #endregion
+
+            #region Check if account is Account Source is same as Account Destination
+
+            if (getAccountSource == getAccountDestination)
+            {
+                response.isSuccess = false;
+                response.Message = "Invalid Request";
+                response.Errors.Add("Source and Destination Account Cannot be the same");
+                return response;
+            }
             #endregion
 
             var accountTransfer = request.MapTranferRequest();
@@ -145,18 +119,22 @@ namespace Service
                     accountTransfer.Status = Status.Failed.ToString();
                     return response;
                 }
+                else if(request.Amount > 100_000)
+                {
+                    response.isSuccess = false;
+                    response.Message = $"Invalid Request";
+                    response.Errors.Add("Transferring amount is too high, cannot exceed 100,000 per day");
+                    accountTransfer.Status = Status.Failed.ToString();
+                    return response;
+                }
                 else
                 {
                     //pass the source balance into destination balance 
-                    getAccountDestination.Data.CurrentBalance = getAccountSource.Data.CurrentBalance += request.Amount;
+                    var newBalance = getAccountSource.Data.CurrentBalance += request.Amount;
+                    
+                    var NewBalance = _accountService.UpdateBalance(getAccountSource.Data.AccountNumber, (decimal)newBalance);
 
-                    //Map the request to the transfer model
-                    accountTransfer.TransferDate = DateTime.UtcNow;
-                    accountTransfer.Status = Status.Completed.ToString();
-                    accountTransfer.Reference = HelperReferenceID.GenerateReferenceID();
-
-
-
+                    var transactionHistory = TransactionHistory(getAccountDestination.Data.AccountNumber, request.Amount,(decimal)newBalance);
 
                     response.isSuccess = true;
                     response.Message = $"Successfully Transfering Money to other Account";
@@ -167,8 +145,8 @@ namespace Service
             else
             {
                 response.isSuccess = false;
-                response.Message = $"Invalid Transaction Type";
-                response.Errors.Add("Invalid Request, Please Try Again");
+                response.Message = $"Invalid Request";
+                response.Errors.Add("Invalid Transaction Type, Please Try Again");
                 return response;
             }
         }

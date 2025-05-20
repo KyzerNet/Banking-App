@@ -16,7 +16,6 @@ namespace Service.IService
         /// <returns>Response Api Transaction Transfer Account Reponse</returns>
         ResponseApi<TransferResponse> TransferOut(TranferRequest request);
 
-        ResponseApi<TransferResponse> TransferIn(string? request);
 
     }
 }
