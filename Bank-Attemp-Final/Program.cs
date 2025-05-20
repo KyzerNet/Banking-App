@@ -14,12 +14,15 @@ namespace Bank_Attemp_Final
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            
+           
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<ITransactionService, TransactionService>();
             builder.Services.AddSingleton<ITransferService, TransferService>();
+
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddOpenApi();
+            builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
