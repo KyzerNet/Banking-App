@@ -1,7 +1,7 @@
 ﻿using Models;
 using Models.Enums;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace ModelDto.AccountDto
 {
@@ -19,11 +19,10 @@ namespace ModelDto.AccountDto
         public string AccountEmail { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Gender is required.")]
-        [EnumDataType(typeof(GenderOptions), ErrorMessage = "Invalid Gender Options.")]
+        [EnumDataType(typeof(GenderOptions), ErrorMessage = "Invalid gender.")]
         public GenderOptions Gender { get; set; }
 
         [Required(ErrorMessage = "Birth date is required.")]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))]
         [ValidateBirthDate] //validate birthdate
         public DateTime BirthDate { get; set; }
 
@@ -33,7 +32,7 @@ namespace ModelDto.AccountDto
             {
                 CostumerName = this.AccountName,
                 CostumerEmail = this.AccountEmail,
-                Gender = this.Gender.ToString(),
+                Gender = this.Gender.ToString().ToLowerInvariant(),
                 BirthDay = this.BirthDate,
             };
         }
