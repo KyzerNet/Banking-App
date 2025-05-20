@@ -1,6 +1,7 @@
 ﻿using HelperContainer;
 using ModelDto.AccountDto;
 using Models;
+using Models.Enums;
 using Response;
 using Service.IService;
 
@@ -14,7 +15,31 @@ namespace Service
         /// </summary>
         public AccountService()
         {
-            _accounts = new List<Account>();
+            _accounts = new List<Account>()
+            {
+                new Account
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = "CA123456789",
+                    CostumerName = "John Doe",
+                    CostumerEmail = "sadsad@gmail.com",
+                    BirthDay = DateTime.Parse("2000-11-11"),
+                    CreatedAt = DateTime.UtcNow,
+                    CurrentBalance = 50_000_000,
+                    Gender = GenderOptions.Male.ToString()
+                },
+                new Account
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = "CA122456789",
+                    CostumerName = "John Doe11",
+                    CostumerEmail = "sadsad11@gmail.com",
+                    BirthDay = DateTime.Parse("2000-11-11"),
+                    CreatedAt = DateTime.UtcNow,
+                    CurrentBalance = 0,
+                    Gender = GenderOptions.Male.ToString()
+                }
+            };
         }
 
         /// <summary>

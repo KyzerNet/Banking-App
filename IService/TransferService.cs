@@ -16,9 +16,12 @@ namespace Service
         public TransferService(IAccountService accountService)
         {
             _accountService = accountService;
-            _transfer = new List<Transfer>();      
+            _transfer = new List<Transfer>();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ResponseApi<List<TransferResponse>> TransferHistory()
         {
             var history = _transfer.Select(x => x.GetTransferResponse()).ToList();
@@ -27,7 +30,7 @@ namespace Service
                 return new ResponseApi<List<TransferResponse>>()
                 {
                     isSuccess = true,
-                    Message = "No Account Found",
+                    Message = "No Transaction",
                 };
             }
             return new ResponseApi<List<TransferResponse>>
@@ -144,6 +147,8 @@ namespace Service
                     accountTransfer.TransferDate = DateTime.UtcNow;
 
                     accountTransfer.NewBalance = newBalance;
+
+                    _transfer.Add(accountTransfer);
                     response.isSuccess = true;
                     response.Message = $"Successfully Transfering Money to other Account";
                     response.Data = accountTransfer.GetTransferResponse();
