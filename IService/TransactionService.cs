@@ -149,16 +149,16 @@ namespace Service
                 }
                 else
                 {
-                    getAccountId.Data.CurrentBalance -= request.Amount;
-                     var newBalance = getAccountId.Data.CurrentBalance += request.Amount;
+                    var newBalance = getAccountId.Data.CurrentBalance -= request.Amount;
                     //update balance
                     _accountService.UpdateBalance(getAccountId.Data.AccountNumber, (decimal)newBalance);
-                    transaction.TransactionId = HelperReferenceID.GenerateReferenceID();
+
+                    transaction.TransactionId = HelperReferenceID.GenerateReferenceID(); //generating random ID
                     transaction.Status = Status.Completed.ToString();
                     transaction.Timestamp = DateTime.UtcNow;
 
                     response.isSuccess = true;
-                    response.Message = $"Successfully withdrew the desired amount";
+                    response.Message = $"Successfully Widthraw the desire Amount";                   
                     response.Data = transaction.GetTransactionResponse();
                     return response;
                 }
