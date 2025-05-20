@@ -7,23 +7,21 @@ using Service.IService;
 namespace Bank_Attemp_Final.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly AccountService _accountService;
         private readonly IAccountService _account;
 
-        public AccountController(AccountService accountService, IAccountService account)
+        public AccountController(IAccountService account)
         {
             _account = account;
-            _accountService = accountService;
         }
 
         [HttpPost]
-        [Route("Add Account")]
         public IActionResult AddAccount(AccountRequest account)
         {
             // Ensure the AddAccount method returns a valid ResponseApi type
-            var result =  _accountService.AddAccount(account);
+            var result =  _account.AddAccount(account);
 
             if (!result.isSuccess)
             {
@@ -33,7 +31,6 @@ namespace Bank_Attemp_Final.Controllers
         }
 
         [HttpGet]
-        [Route("Get All Accounts")]
         public IActionResult GetAllAccounts()
         {
             // Ensure the GetListAccounts method returns a valid ResponseApi type
@@ -46,7 +43,6 @@ namespace Bank_Attemp_Final.Controllers
         }
 
         [HttpGet("{id}")]
-        [Route("Get Account")]
         public IActionResult GetAccount(string id)
         {
             // Ensure the GetAccountByID method returns a valid ResponseApi type
@@ -59,7 +55,6 @@ namespace Bank_Attemp_Final.Controllers
         }
 
         [HttpPatch("{id}")]
-        [Route("Update Account")]
         public IActionResult UpdateAccount([FromBody] AccountUpdateRequest account,string id)
         {
             // Ensure the UpdateAccount method returns a valid ResponseApi type
@@ -72,7 +67,6 @@ namespace Bank_Attemp_Final.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Route("Delete Account")]
         public IActionResult DeleteAccount(string id)
         {
             // Ensure the DeleteAccount method returns a valid ResponseApi type
