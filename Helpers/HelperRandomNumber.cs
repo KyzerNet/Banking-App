@@ -1,19 +1,31 @@
-﻿namespace HelperContainer
+﻿using System.Text;
+
+namespace HelperContainer
 {
+    /// <summary>
+    /// Helper class to generate random numbers
+    /// </summary>
     public class HelperRandomNumber
     {
         readonly static Random _random = new();
-        private static string randomId { get; set; } = string.Empty;
 
         public static string GenerateRandomId()
         {
-            randomId = "CA";
+            var accountId = "CA" + GenerateDigits(10);
+            return accountId;
+        }
+        private static string GenerateDigits(int length)
+        {
+            var sb = new StringBuilder();
 
-            for (int i = 0; i < 10; i++)
+            lock(_random)
             {
-                randomId +=   _random.Next(0, 10).ToString();
+                for (int i = 0; i < length; i++)
+                {
+                    sb.Append(_random.Next(0, 10));
+                }
             }
-            return randomId;
+            return sb.ToString();
         }
     }
 }
