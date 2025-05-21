@@ -119,14 +119,9 @@ namespace ProjectTesting
         [Fact]
         public void Check_GetAllAccount_IfWorking()
         {
-            // Arrange
-            var addedAccount1 = AddedAccount.AddAccount1();
-            var addedAccount2 = AddedAccount.AddAccount2();
-            var addedAccount3 = AddedAccount.AddAccount();
-
-            _account.AddAccount(addedAccount1);
-            _account.AddAccount(addedAccount2);
-            _account.AddAccount(addedAccount3);
+            var account1 = _account.AddAccount(AddedAccount.AddAccount1());
+            var account2 = _account.AddAccount(AddedAccount.AddAccount1());
+            var account3 = _account.AddAccount(AddedAccount.AddAccount1());
 
             // Act
             var actualResponse = _account.GetListAccounts();
@@ -217,7 +212,7 @@ namespace ProjectTesting
                 Gender = (GenderOptions)32423,
             };
             var result = _account.AddAccount(addAccount);
-            AsserApiHelpers.AsserApiError(result,"Validation Failed", "Invalid Gender Options.");
+            AsserApiHelpers.AsserApiError(result,"Validation Failed", "Invalid gender.");
         }
         [Fact]
         public void UpdateAccount_ShouldSucceed_WithValidData()
