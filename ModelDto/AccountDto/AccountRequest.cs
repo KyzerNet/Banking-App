@@ -48,15 +48,14 @@ namespace ModelDto.AccountDto
             if (value == null)
                 return ValidationResult.Success; // let required handle
 
-            DateTime dateNow = DateTime.UtcNow;
 
             if (value is DateTime birthDate)
             {
-                if (birthDate > dateNow)
+                if (birthDate > DateTime.Now)
                 {
                     return new ValidationResult(ErrorMessage ?? "Birth Date must not exceed the current date and time.");
                 }
-                if (birthDate == dateNow)
+                if (birthDate.Date == DateTime.UtcNow.Date)
                 {
                     return new ValidationResult(ErrorMessage ?? "Birth Date cannot be Today");
                 }
